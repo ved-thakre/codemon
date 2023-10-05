@@ -8,6 +8,8 @@ module.exports = {
         secondary: "#1E1F26",
         primaryText: "#868CA0",
         text555: "#555",
+        TwodashColor: "rgba(255, 255, 255, 0.2)",
+        FourdashColor: "rgba(255, 255, 255, 0.4)",
       },
     },
   },
