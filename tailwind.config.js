@@ -10,6 +10,7 @@ module.exports = {
         text555: "#555",
         TwodashColor: "rgba(255, 255, 255, 0.2)",
         FourdashColor: "rgba(255, 255, 255, 0.4)",
+        FivedashColor: "rgba(256, 256, 256, 0.05)",
       },
     },
   },

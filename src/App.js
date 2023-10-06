@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import  { Home }  from './container';
+import  { Home, NewProject }  from './container';
 import { auth, db } from './config/firebase.config';
 import { useEffect, useState } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
@@ -41,14 +41,18 @@ function App() {
     <>
       {isLoading ? (
         <div className="w-screen h-screen flex items-center justify-center overflow-hidden">
-          <Spinner/>
+          <Spinner />
         </div>
       ) : (
-        <div className="w-screen  h-screen flex items-start justify-start 
-        overflow-hidden">
+        <div
+          className="w-screen  h-screen flex items-start justify-start 
+        overflow-hidden"
+        >
           <Routes>
-            <Route path='/home/*' element={<Home/>}/>
-            <Route path='*' element={<Navigate to={"/home"}/>}/>
+            <Route path="/home/*" element={<Home />} />
+            <Route path="*" element={<Navigate to={"/home"} />} />
+            <Route path="/newProject" element={< NewProject/>}
+            />
           </Routes>
         </div>
       )}

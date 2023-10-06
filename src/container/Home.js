@@ -41,7 +41,7 @@ const Home = () => {
             />
           </Link>
           {/* Web Developement enviroment  */}
-          <Link to={"./newProject"}>
+          <Link to={"/newProject"}>
             <div
               class=" py-2 flex items-center justify-center rounded-xl border
              border-gray-400 cursor-pointer group hover:border-gray-200"
