@@ -4,14 +4,58 @@ import { UserAuthInput } from "../components";
 import { FaEnvelope, FaGithub } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { MdPassword } from "react-icons/md";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { signInWithGithub, signInWithGoogle } from "../utils/helpers";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebase.config";
+import { fadeInOut } from "../animation";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [getEmaiValidationStatus, setGetEmaiValidationStatus] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [alert, setAlert] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
+
+  const createNewUser = async () => {
+    if(getEmaiValidationStatus){
+      await createUserWithEmailAndPassword(auth, email, password).then
+        ((userCred) => {
+          if(userCred){
+            console.log(userCred);
+          }
+        }).catch((err) => {
+          console.log(err);
+        })
+    }
+  }
+
+  const loginWithEmailAndPassword = async () => {
+    if (getEmaiValidationStatus) {
+      await signInWithEmailAndPassword(auth, email, password)
+        .then((userCred) => {
+          if (userCred) {
+            console.log(userCred);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+            if (err.message.includes("invalid-login-credentials")) {
+            setAlert(true);
+            setAlertMsg("Invalid Email Or Password");
+          } else {
+            setAlert(true);
+            setAlertMsg("Try again later");
+          }
+
+          setInterval(() => {
+            setAlert(false);
+          }, 4000);
+        });
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="w-full flex flex-col items-center justify-center py-3">
@@ -41,10 +85,22 @@ const SignUp = () => {
             Icon={MdPassword}
           />
           {/* alert section */}
+          <AnimatePresence>
+            {alert && (
+              <motion.p
+                key={"AlertMessage"}
+                {...fadeInOut}
+                className="text-red-500"
+              >
+                {alertMsg}
+              </motion.p>
+            )}
+          </AnimatePresence>
 
           {/* login section */}
           {!isLogin ? (
             <motion.div
+              onClick={createNewUser}
               whileTap={{ scale: 0.9 }}
               className="flex items-center justify-center w-full py-2.5 rounded-xl
                hover:bg-emerald-400 cursor-pointer bg-emerald-500"
@@ -54,6 +110,7 @@ const SignUp = () => {
             </motion.div>
           ) : (
             <motion.div
+              onClick={loginWithEmailAndPassword}
               whileTap={{ scale: 0.9 }}
               className="flex items-center justify-center w-full py-2.5 rounded-xl
                hover:bg-emerald-400 cursor-pointer bg-emerald-500"
