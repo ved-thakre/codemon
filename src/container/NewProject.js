@@ -72,11 +72,11 @@ const NewProject = () => {
       >
         {/* alert section */}
         <AnimatePresence>
-            {alert && <Alert status={"Success"} alertMsg={"Project Saved"} />}
+          {alert && <Alert status={"Success"} alertMsg={"Project Saved"} />}
         </AnimatePresence>
 
         {/* header section */}
-        <header className="w-full flex items-center justify-between pr-12 pl-8 py-4">
+        <header className="w-full flex items-center justify-between pr-12 pl-8 py-4 ">
           <div className="flex items-center justify-center gap-6">
             <Link to={"/home/projects"}>
               <img
@@ -190,7 +190,7 @@ const NewProject = () => {
                 <div className="w-full flex items-center justify-between">
                   <div
                     className="bg-secondary px-4 py-2 border-t-4 flex items-center
-                     justify-center gap-3 border-t-gray-500"
+                     justify-center gap-3 border-t-gray-500 "
                   >
                     <FaHtml5 className="text-xl text-red-500" />
                     <p className=" text-primaryText font-semibold">HTML</p>
@@ -202,9 +202,9 @@ const NewProject = () => {
                     <FaChevronDown className="text-xl text-primaryText" />
                   </div>
                 </div>
-                <div className="w-full px-2">
+                <div className="w-full px-2 overflow-y-scroll">
                   <CodeMirror
-                    value={html} 
+                    value={html}
                     height="600px"
                     extensions={[javascript({ jsx: true })]}
                     theme={"dark"}
@@ -232,7 +232,7 @@ const NewProject = () => {
                       <FaChevronDown className="text-xl text-primaryText" />
                     </div>
                   </div>
-                  <div className="w-full px-2">
+                  <div className="w-full px-2 overflow-y-scroll">
                     <CodeMirror
                       value={css}
                       height="600px"
@@ -256,12 +256,12 @@ const NewProject = () => {
                       <p className=" text-primaryText font-semibold">JS</p>
                     </div>
                     {/* icons section */}
-                    <div className="cursor-pointer flex items-center justify-center gap-4 px-4">
+                    <div className="cursor-pointer flex items-center justify-center gap-4 px-4" >
                       <FcSettings className="text-xl" />
                       <FaChevronDown className="text-xl text-primaryText" />
                     </div>
                   </div>
-                  <div className="w-full px-2">
+                  <div className="w-full px-2 overflow-y-scroll">
                     <CodeMirror
                       value={js}
                       height="600px"
