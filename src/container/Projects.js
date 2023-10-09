@@ -48,6 +48,7 @@ const Projects = () => {
 }
 
 const ProjectCard = ({ project, index }) => {
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -59,13 +60,13 @@ const ProjectCard = ({ project, index }) => {
        rounded-md p-4 flex flex-col items-center justify-center gap-4"
     >
       <div
-        className="bg-secondary w-full h-full rounded-md overflow-hidden"
+        className="bg-secondary w-full h-full rounded-md"
         style={{ overflow: "hidden", height: "100%" }}
       >
         <iframe
           title="Result"
           srcDoc={project.output}
-          style={{ border: "none", width: "100%", height: "100%" }}
+          style={{ border: "none", width: "100%", height: "100%", overflow : "hidden"}}
         />
       </div>
 
