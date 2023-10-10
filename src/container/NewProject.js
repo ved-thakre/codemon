@@ -41,7 +41,7 @@ const NewProject = () => {
 
       useEffect(() => {
         updateOutput();
-      }, [html, css, js]);
+      },[html, css, js]);
 
     const saveProgram = async () => {
         const id = `${Date.now()}`

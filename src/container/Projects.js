@@ -23,7 +23,7 @@ const Projects = () => {
     }else{
       setFiletered(null);
     }
-  },[searchTerm])
+  },[searchTerm]);
 
 
   return (
