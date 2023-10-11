@@ -16,7 +16,6 @@ function App() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(userCred => {
         if(userCred){
-          console.log(userCred?.providerData[0]);
           setDoc(doc(db, "users", userCred?.uid), userCred?.providerData[0]).
           then(
             () => {
@@ -63,6 +62,7 @@ function App() {
             <Route path="*" element={<Navigate to={"/home"} />} />
             <Route path="/compiler" element={<Compiler />} />
             <Route path="/newProject" element={<NewProject />} />
+            <Route path="/view/:id" element={<NewProject />} />
           </Routes>
         </div>
       )}

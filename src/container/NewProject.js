@@ -5,7 +5,7 @@ import SplitPane from "react-split-pane";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { Link } from "react-router-dom";
-import { Logo } from "../assets";
+import { Dark, Light, Logo } from "../assets";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdCheck, MdEdit } from "react-icons/md";
 import { useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import Alert from "../components/Alert";
 const NewProject = () => {
     const [html, setHtml] = useState("");
     const [css, setCss] = useState("");
+    const [mode, setMode] = useState("dark");
     const [js, setJs] = useState("");
     const [output, setOutput] = useState("");
     const [isTitle, setIsTitle] = useState("");
@@ -156,6 +157,23 @@ const NewProject = () => {
               </div>
             </div>
           </div>
+          {mode === "dark" ? (
+            <motion.img
+              whileTap={{ scale: 1.2 }}
+              onClick={() => setMode("light")}
+              src={Light}
+              alt="Light"
+              className="w-10 absolute top-5 right-72 cursor-pointer"
+            />
+          ) : (
+            <motion.img
+              whileTap={{ scale: 1.2 }}
+              onClick={() => setMode("dark")}
+              src={Dark}
+              alt="Light"
+              className="w-8 mt-1 ml-1 absolute top-5 right-72  cursor-pointer"
+            />
+          )}
 
           {/* user section */}
           {user && (
@@ -207,7 +225,7 @@ const NewProject = () => {
                     value={html}
                     height="600px"
                     extensions={[javascript({ jsx: true })]}
-                    theme={"dark"}
+                    theme={mode === "dark" ? "dark" : "light"}
                     onChange={(value, viewUpdate) => {
                       setHtml(value);
                     }}
@@ -237,7 +255,7 @@ const NewProject = () => {
                       value={css}
                       height="600px"
                       extensions={[javascript({ jsx: true })]}
-                      theme={"dark"}
+                      theme={mode === "dark" ? "dark" : "light"}
                       onChange={(value, viewUpdate) => {
                         setCss(value);
                       }}
@@ -256,7 +274,7 @@ const NewProject = () => {
                       <p className=" text-primaryText font-semibold">JS</p>
                     </div>
                     {/* icons section */}
-                    <div className="cursor-pointer flex items-center justify-center gap-4 px-4" >
+                    <div className="cursor-pointer flex items-center justify-center gap-4 px-4">
                       <FcSettings className="text-xl" />
                       <FaChevronDown className="text-xl text-primaryText" />
                     </div>
@@ -266,7 +284,7 @@ const NewProject = () => {
                       value={js}
                       height="600px"
                       extensions={[javascript({ jsx: true })]}
-                      theme={"dark"}
+                      theme={mode === "dark" ? "dark" : "light"}
                       onChange={(value, viewUpdate) => {
                         setJs(value);
                       }}

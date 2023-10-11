@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'; 
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
+import { useNavigate } from "react-router-dom";
 import { MdBookmark } from 'react-icons/md';
 
 const Projects = () => {
@@ -9,6 +10,7 @@ const Projects = () => {
     state?.searchTerm?.searchTerm ? state.searchTerm?.searchTerm : "");
 
   const [filetered, setFiletered] = useState(null);
+
 
   useEffect(()=>{
     if(searchTerm?.length > 0){
@@ -48,13 +50,17 @@ const Projects = () => {
 }
 
 const ProjectCard = ({ project, index }) => {
-
+  const navigate = useNavigate();
+   const handleProjectClick = () => {
+     // Here, you navigate to the "newProject" route and pass the project data as state
+     navigate(`/view/${project?.id}`, { state: { project } });
+   };
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration : 0.5, delay: index * 0.3}}
+      transition={{ duration: 0.5, delay: index * 0.3 }}
       key={index}
       className="w-full cursor-pointer md:w-[450px] h-[375px] bg-secondary
        rounded-md p-4 flex flex-col items-center justify-center gap-4"
@@ -66,11 +72,19 @@ const ProjectCard = ({ project, index }) => {
         <iframe
           title="Result"
           srcDoc={project.output}
-          style={{ border: "none", width: "100%", height: "100%", overflow : "hidden"}}
+          style={{
+            border: "none",
+            width: "100%",
+            height: "100%",
+            overflow: "hidden",
+          }}
         />
       </div>
 
-      <div className="flex items-center justify-start gap-3 w-full">
+      <div
+        onClick={handleProjectClick}
+        className="flex items-center justify-start gap-3 w-full"
+      >
         {/* image */}
         <div
           className="w-14 h-14 flex items-center justify-center

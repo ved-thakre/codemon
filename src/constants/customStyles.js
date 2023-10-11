@@ -2,8 +2,8 @@ export const customStyles = {
   control: (styles) => ({
     ...styles,
     width: "100%",
-    maxWidth: "14rem",
-    minWidth: "12rem",
+    maxWidth: "12rem",
+    minWidth: "10%",
     borderRadius: "5px",
     color: "#000",
     fontSize: "0.9rem",
