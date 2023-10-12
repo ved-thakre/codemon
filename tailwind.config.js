@@ -12,6 +12,10 @@ module.exports = {
         FourdashColor: "rgba(255, 255, 255, 0.4)",
         FivedashColor: "rgba(256, 256, 256, 0.05)",
       },
+      spacing: {
+        editorHeight: "80vh",
+        smallEditorHeight: "60vh",
+      },
     },
   },
   plugins: [],

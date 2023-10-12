@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Editor from "@monaco-editor/react";
 import { motion} from 'framer-motion'
-import { Dark, Light, Logo } from "../assets";
+import { Dark, Light, Logo, sLogo } from "../assets";
 import { Link } from "react-router-dom";
 import { LanguagesDropdown, Loader } from "../components";
 import { languageOptions } from "../constants/languageOptions";
@@ -115,14 +115,25 @@ const Compiler = () => {
     }
   };
 
+
   return (
     <>
-      <div className="w-screen h-screen flex flex-col items-start justify-start overflow-hidden">
+      <div className="w-screen h-screen flex flex-col items-start justify-start overflow-y-auto sm:overflow-hidden">
         {/* header section */}
-        <header className="w-full flex items-center gap-6 pr-12 pl-8 py-4 relative">
-          <Link to={"/home/projects"}>
-            <img className="w-32 h-auto object-contain" src={Logo} alt="Logo" />
+        <header className="w-full flex items-center pt-2 pb-2 lg:gap-7 sm:gap-2 md:gap-4 pr-12 pl-5 sm:py-4 relative">
+          <Link to="/home/projects">
+            <img
+              className="w-32 h-auto object-contain hidden sm:block"
+              src={Logo}
+              alt="Logo"
+            />
+            <img
+              className="w-8 h-auto mr-4 object-contain sm:hidden"
+              src={sLogo}
+              alt="C"
+            />
           </Link>
+
           <div className="">
             <LanguagesDropdown onSelectChange={onSelectChange} />
           </div>
@@ -131,7 +142,7 @@ const Compiler = () => {
               htmlFor="default-range"
               class="inline-block mb-2 pt-2 pr-2 text-lg font-thin text-gray-900 dark:text-white"
             >
-              <b>Fs</b>
+              <b className="hidden sm:block">Fs</b>
             </label>
             <input
               id="default-range"
@@ -142,7 +153,7 @@ const Compiler = () => {
               }}
               min={1}
               max={35}
-              class="w-12 h-2 ml-1  bg-gray-200 accent-emerald-500 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              class="w-12 h-2 lg:mx-1 bg-gray-200 accent-emerald-500 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
             ></input>
           </div>
           {changeMode === "dark" ? (
@@ -151,7 +162,7 @@ const Compiler = () => {
               onClick={() => setChangeMode("light")}
               src={Light}
               alt="Light"
-              className="w-10 absolute top-5 left-2/3 cursor-pointer"
+              className="w-10 absolute cursor-pointer top-2 sm:top-4 right-4 sm:left-2/3"
             />
           ) : (
             <motion.img
@@ -159,31 +170,17 @@ const Compiler = () => {
               onClick={() => setChangeMode("dark")}
               src={Dark}
               alt="Light"
-              className="w-8 mt-1 ml-1 absolute top-5 left-2/3 cursor-pointer"
+              className="w-8 mt-1 ml-1 absolute cursor-pointer top-2 sm:top-4 right-4 sm:left-2/3"
             />
           )}
         </header>
         {/* Compiler */}
-        <div
-          className={` ${
-            window.innerWidth <= 425
-              ? "flex flex-col"
-              : "grid grid-cols-10 w-full"
-          }`}
-        >
-          <div
-            className="col-span-7 h-full ml-5"
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-              flexDirection: "column",
-            }}
-          >
+        <div className="flex flex-col gap-3 pr-2 sm:gap-0 sm:grid grid-cols-10 w-full sm:pr-0 sm:mb-0 relative">
+          <div className="col-span-7 h-full ml-2 sm:ml-5 flex flex-col justify-end items-end">
             {/* Wrap the Editor component in a div with rounded-md */}
             <div className="overlay rounded-md overflow-hidden w-full h-full shadow-4xl">
               <Editor
-                height="80vh"
+                className=" h-smallEditorHeight sm:h-editorHeight"
                 language={language?.value || "cpp"}
                 theme={changeMode === "dark" ? "vs-dark" : "light"}
                 value={code}
@@ -199,12 +196,12 @@ const Compiler = () => {
               onClick={handleCompile}
               className={`rounded-sm text-sm text-black ${
                 processing ? "pl-6 pr-6" : "px-5"
-              } py-2 mt-4 bg-emerald-400`}
+              } py-2 mt-3 sm:mt-4 bg-emerald-400 absolute -top-14 right-20 sm:top-0 sm:right-0 sm:relative`}
             >
               {processing ? <Loader /> : "Run"}
             </motion.button>
           </div>
-          <div className="col-span-3" style={{ marginLeft: "6%" }}>
+          <div className="sm:col-span-3 ml-2 sm:ml-5 mr-0 sm:mr-4">
             <div className="w-full h-fit rounded-md">
               <textarea
                 name="input"
@@ -217,16 +214,16 @@ const Compiler = () => {
                   resize: "none",
                   color: "white",
                   padding: "9px",
-                  width: "95%",
-                  height: "220px",
+                  width: "100%",
+                  height: "200px",
                   borderRadius: "5px",
                   backgroundColor:
                     changeMode === "dark" ? "#1e1e1e" : "#FFFFFE",
                 }}
               />
             </div>
-            <div className="w-full h-fit mt-2">
-              <p className="text-white m-1">Output</p>
+            <div className="w-full h-fit mt-1 sm:mt-2">
+              <p className="text-white   sm:m-1">Output</p>
               <textarea
                 name="output"
                 value={output ? getOutput() : ""}
@@ -236,7 +233,7 @@ const Compiler = () => {
                     output && output?.status?.id !== 3
                       ? " rgb(239 68 68)"
                       : "#6A9956",
-                  width: "95%",
+                  width: "100%",
                   padding: "9px",
                   height: "220px",
                   borderRadius: "5px",

@@ -59,9 +59,12 @@ function App() {
         >
           <Routes>
             <Route path="/home/*" element={<Home />} />
-            <Route path="*" element={<Navigate to={"/home"} />} />
+            <Route path="*" element={<Navigate to="/home" />} />
             <Route path="/compiler" element={<Compiler />} />
-            <Route path="/newProject" element={<NewProject />} />
+            <Route
+              path="/newProject"
+              element={<NewProject />} // No 'id' parameter provided here
+            />
             <Route path="/view/:id" element={<NewProject />} />
           </Routes>
         </div>

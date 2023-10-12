@@ -4,26 +4,69 @@ import { FcSettings } from "react-icons/fc";
 import SplitPane from "react-split-pane";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Dark, Light, Logo } from "../assets";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdCheck, MdEdit } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { UserProfileDetails } from "../components";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase.config";
 import Alert from "../components/Alert";
 
 const NewProject = () => {
+    const user = useSelector((state) => state.user?.user);
+    const { id } = useParams();
     const [html, setHtml] = useState("");
     const [css, setCss] = useState("");
     const [mode, setMode] = useState("dark");
     const [js, setJs] = useState("");
     const [output, setOutput] = useState("");
+    const [author, setAuthor] = useState("");
     const [isTitle, setIsTitle] = useState("");
-    const [title, setTitle] = useState("Untitled");
+    const [title, setTitle] = useState("");
     const [alert, setAlert] = useState(false);
-    const user = useSelector((state) => state.user?.user);
+
+    const projectDocRef = id ? doc(db, "Projects", id) : null;
+    
+    const getProjectData = async () => {
+      if (!projectDocRef) {
+        console.log("No 'id' parameter available.");
+        return;
+      }
+
+      // Fetch project data
+      try {
+        const projectDocSnapshot = await getDoc(projectDocRef);
+        if (projectDocSnapshot.exists()) {
+          const projectData = projectDocSnapshot.data();
+          console.log(projectData);
+          const { html, css, js, title } = projectData;
+          setHtml(html);
+          setCss(css);
+          setAuthor(
+            projectData?.user?.displayName ||
+              (projectData?.user?.email
+                ? projectData?.user?.email.split("@")[0]
+                : "Author")
+          );
+
+
+          setJs(js);
+          setTitle(title);
+        } else {
+          console.log("Project document does not exist.");
+        }
+      } catch (error) {
+        console.error("Error retrieving project data:", error);
+      }
+    };
+    
+     useEffect(() => {
+       if (id) {
+         getProjectData();
+       }
+     }, [id, projectDocRef]);
 
     const updateOutput = () => {
         const combineCode = `
@@ -111,7 +154,7 @@ const NewProject = () => {
                         key={"titleLabel"}
                         className="px-2 py-1 text-white text-lg"
                       >
-                        {title}
+                        {title === "" ? "Untitled" : title}
                       </motion.p>
                     </>
                   )}
@@ -133,16 +176,23 @@ const NewProject = () => {
                     </>
                   ) : (
                     <>
-                      <motion.div
-                        key={"MdEdit"}
-                        whileTap={{ scale: 0.9 }}
-                        className=" cursor-pointer"
-                        onClick={() => {
-                          setIsTitle(true);
-                        }}
-                      >
-                        <MdEdit className=" text-2xl text-primaryText" />
-                      </motion.div>
+                      {author === user?.displayName ||
+                      author === user?.email ? (
+                        user.email.split("@")[0]
+                      ) : null ? (
+                        <motion.div
+                          key={"MdEdit"}
+                          whileTap={{ scale: 0.9 }}
+                          className=" cursor-pointer"
+                          onClick={() => {
+                            setIsTitle(true);
+                          }}
+                        >
+                          <MdEdit className=" text-2xl text-primaryText" />
+                        </motion.div>
+                      ) : (
+                        <></>
+                      )}
                     </>
                   )}
                 </AnimatePresence>
@@ -150,7 +200,9 @@ const NewProject = () => {
               {/* follow */}
               <div className="flex items-center justify-center px-2  -mt-2 gap-2">
                 <p className=" text-primaryText text-sm">
-                  {user?.displayName
+                  {id
+                    ? author
+                    : user?.displayName
                     ? user?.displayName
                     : `${user?.email.split("@")[0]}`}
                 </p>
