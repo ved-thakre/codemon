@@ -13,7 +13,7 @@ const UserProfileDetails = () => {
     <div className="flex items-center justify-center gap-4 relative">
       <div
         className="w-12 h-12 flex items-center justify-center rounded-md
-         overflow-hidden cursor-pointer bg-emerald-500"
+         overflow-hidden cursor-pointer bg-emerald-500 hidden sm:block"
       >
         {user?.photoURL ? (
           <>
@@ -36,7 +36,7 @@ const UserProfileDetails = () => {
             setIsMenu((prev)=>!prev);
         }}
         whileTap={{ scale: 0.9 }}
-        className=" p-4 rounded-md flex items-center justify-center bg-secondary cursor-pointer"
+        className="p-3.5 sm:p-4 rounded-md flex items-center justify-center bg-secondary cursor-pointer"
       >
         <FaChevronDown className=" text-primaryText" />
       </motion.div>

@@ -44,10 +44,19 @@ body{
 
 .Resizer.vertical {
     width: 11px;
+    /* Default width */
     margin: 0 -5px;
     border-left: 5px solid rgba(255, 255, 255, 0);
     border-right: 5px solid rgba(255, 255, 255, 0);
     cursor: col-resize;
+}
+
+/* Media query for screens less than 640px */
+@media (max-width: 640px) {
+    .Resizer.vertical {
+        width: 0;
+        /* Set width to 0 for screens less than 640px */
+    }
 }
 
 .Resizer.vertical:hover {

@@ -46,16 +46,15 @@ const Compiler = () => {
     };
     const options = {
       method: "POST",
-      url: "https://judge0-ce.p.rapidapi.com/submissions",
+      url: process.env.REACT_APP_RAPID_API_URL,
       params: { base64_encoded: "true", fields: "*" },
       headers: {
         "content-type": "application/json",
-        "X-RapidAPI-Key": "3d1647050bmsh8e8e4442e00eb39p1e9a18jsn380a3b280ae8",
-        "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
+        "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
+        "X-RapidAPI-Host": process.env.REACT_APP_RAPID_API_HOST,
       },
       data: formData,
     };
-    console.log(options)
     try {
       const response = await axios.request(options);
       const token = response.data.token;
@@ -70,11 +69,11 @@ const Compiler = () => {
   const checkStatus = async (token) => {
     const options = {
       method: "GET",
-      url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
+      url: `${process.env.REACT_APP_RAPID_API_URL}/${token}`,
       params: { base64_encoded: "true", fields: "*" },
       headers: {
-        "X-RapidAPI-Key": "3d1647050bmsh8e8e4442e00eb39p1e9a18jsn380a3b280ae8",
-        "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
+        "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
+        "X-RapidAPI-Host": process.env.REACT_APP_RAPID_API_HOST,
       },
     };
     try {

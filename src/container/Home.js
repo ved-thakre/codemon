@@ -23,7 +23,9 @@ const Home = () => {
   return (
     <>
       <div
-        className={`w-2 ${isSideMenu ? "w-2" : "flex-[.19] xl:flex-[.2]"}
+        className={`w-2 ${
+          isSideMenu ? "w-2" : "flex-[.60] sm:flex-[.2] "
+        }
        min-h-screen max-h-screen relative bg-secondary px-3 py-6 flex flex-col items-center justify-start gap-4 transition-all duration-200 ease-in-out`}
       >
         {/* anchor */}
@@ -54,7 +56,7 @@ const Home = () => {
               class=" py-2 flex items-center justify-center rounded-xl border
              border-gray-400 cursor-pointer group hover:border-gray-200"
             >
-              <p className="text-gray-400 group-hover:text-gray-200 capitalize">
+              <p className="sm:text-lg text-sm text-gray-400 group-hover:text-gray-200 capitalize">
                 Enviroment
               </p>
             </div>
@@ -65,7 +67,7 @@ const Home = () => {
               class=" py-2 flex items-center justify-center rounded-xl border
              border-gray-400 cursor-pointer group hover:border-gray-200"
             >
-              <p className="text-gray-400 group-hover:text-gray-200 capitalize">
+              <p className="sm:text-lg text-sm text-gray-400 group-hover:text-gray-200 capitalize">
                 Compiler
               </p>
             </div>
@@ -90,16 +92,16 @@ const Home = () => {
         <div className="w-full flex items-center justify-between gap-3">
           {/* Search */}
           <div
-            className="bg-secondary w-full px-4 py-2 rounded-md flex items-center justify-center
-            gap-3"
+            className="bg-secondary w-full px-2 sm:px-4 py-2 rounded-md flex items-center justify-start sm:justify-center
+            gap-1 sm:gap-3"
           >
             <FaSearchengin className="text-2xl text-primaryText" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => dispatch(SET_SEARCH_ACTIONS(e.target.value))}
-              className="flex-1 px-4 py-1 text-xl bg-transparent outline-none border-none
-              text-primaryText placeholder:text-gray-600"
+              className="flex-1 px-1 sm:px-4 py-1 text-md sm:text-xl bg-transparent outline-none border-none
+              text-primaryText placeholder:text-gray-600 hidden sm:block"
               placeholder="Search here..."
             />
           </div>

@@ -5,71 +5,78 @@ import SplitPane from "react-split-pane";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { Link, useParams } from "react-router-dom";
-import { Dark, Light, Logo } from "../assets";
+import { Dark, Light, Logo, sLogo, savesm } from "../assets";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdCheck, MdEdit } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { UserProfileDetails } from "../components";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db } from "../config/firebase.config";
+import { auth, db } from "../config/firebase.config";
 import Alert from "../components/Alert";
 
 const NewProject = () => {
-    const user = useSelector((state) => state.user?.user);
-    const { id } = useParams();
-    const [html, setHtml] = useState("");
-    const [css, setCss] = useState("");
-    const [mode, setMode] = useState("dark");
-    const [js, setJs] = useState("");
-    const [output, setOutput] = useState("");
-    const [author, setAuthor] = useState("");
-    const [isTitle, setIsTitle] = useState("");
-    const [title, setTitle] = useState("");
-    const [alert, setAlert] = useState(false);
+  const user = useSelector((state) => state.user?.user);
+  const { id } = useParams();
+  const [html, setHtml] = useState("");
+  const [loggedUser, setloggedUser] = useState(user?.displayName
+    ? user?.displayName
+    : `${user?.email.split("@")[0]}` );
+  const [css, setCss] = useState("");
+  const [mode, setMode] = useState("dark");
+  const [js, setJs] = useState("");
+  const [output, setOutput] = useState("");
+  const [author, setAuthor] = useState("");
+  const [isTitle, setIsTitle] = useState("");
+  const [title, setTitle] = useState("");
+  const [alert, setAlert] = useState(false);
 
-    const projectDocRef = id ? doc(db, "Projects", id) : null;
-    
-    const getProjectData = async () => {
-      if (!projectDocRef) {
-        console.log("No 'id' parameter available.");
-        return;
+  const projectDocRef = id ? doc(db, "Projects", id) : null;
+
+  const getUsers = () => {
+    console.log(author);
+    console.log(loggedUser);
+  }
+
+  const getProjectData = async () => {
+    if (!projectDocRef) {
+      console.log("No 'id' parameter available.");
+      return;
+    }
+
+    // Fetch project data
+    try {
+      const projectDocSnapshot = await getDoc(projectDocRef);
+      if (projectDocSnapshot.exists()) {
+        const projectData = projectDocSnapshot.data();
+        console.log(projectData);
+        const { html, css, js, title } = projectData;
+        setHtml(html);
+        setCss(css);
+        setAuthor(
+          projectData?.user?.displayName ||
+            (projectData?.user?.email
+              ? projectData?.user?.email.split("@")[0]
+              : "Author")
+        );
+
+        setJs(js);
+        setTitle(title);
+      } else {
+        console.log("Project document does not exist.");
       }
+    } catch (error) {
+      console.error("Error retrieving project data:", error);
+    }
+  };
 
-      // Fetch project data
-      try {
-        const projectDocSnapshot = await getDoc(projectDocRef);
-        if (projectDocSnapshot.exists()) {
-          const projectData = projectDocSnapshot.data();
-          console.log(projectData);
-          const { html, css, js, title } = projectData;
-          setHtml(html);
-          setCss(css);
-          setAuthor(
-            projectData?.user?.displayName ||
-              (projectData?.user?.email
-                ? projectData?.user?.email.split("@")[0]
-                : "Author")
-          );
+  useEffect(() => {
+    if (id) {
+      getProjectData();
+    }
+  }, [id, projectDocRef]);
 
-
-          setJs(js);
-          setTitle(title);
-        } else {
-          console.log("Project document does not exist.");
-        }
-      } catch (error) {
-        console.error("Error retrieving project data:", error);
-      }
-    };
-    
-     useEffect(() => {
-       if (id) {
-         getProjectData();
-       }
-     }, [id, projectDocRef]);
-
-    const updateOutput = () => {
-        const combineCode = `
+  const updateOutput = () => {
+    const combineCode = `
         <html>
             <head>
                 <style>${css}</style>
@@ -80,33 +87,35 @@ const NewProject = () => {
             </body>
         </html>
         `;
-        setOutput(combineCode);
-    }
+    setOutput(combineCode);
+  };
 
-      useEffect(() => {
-        updateOutput();
-      },[html, css, js]);
+  useEffect(() => {
+    updateOutput();
+  }, [html, css, js]);
 
-    const saveProgram = async () => {
-        const id = `${Date.now()}`
-        const _doc = {
-            id: id,
-            title: title,
-            html: html,
-            css: css,
-            js: js,
-            output: output,
-            user: user,
-        }
+  const saveProgram = async () => {
+    const id = `${Date.now()}`;
+    const _doc = {
+      id: id,
+      title: title,
+      html: html,
+      css: css,
+      js: js,
+      output: output,
+      user: user,
+    };
 
-        await setDoc(doc(db, "Projects", id), _doc)
-        .then((res) => { setAlert(true) })
-        .catch((err) => console.log(err));
+    await setDoc(doc(db, "Projects", id), _doc)
+      .then((res) => {
+        setAlert(true);
+      })
+      .catch((err) => console.log(err));
 
-        setInterval(() => {
-            setAlert(false);
-        }, 2000);
-    }
+    setInterval(() => {
+      setAlert(false);
+    }, 2000);
+  };
 
   return (
     <>
@@ -120,13 +129,18 @@ const NewProject = () => {
         </AnimatePresence>
 
         {/* header section */}
-        <header className="w-full flex items-center justify-between pr-12 pl-8 py-4 ">
-          <div className="flex items-center justify-center gap-6">
-            <Link to={"/home/projects"}>
+        <header className="w-full flex items-center justify-between pr-2 sm:pr-12 pl-2 sm:pl-8 py-2 sm:py-4 ">
+          <div className="flex items-center justify-center gap-0 sm:gap-6">
+            <Link to="/home/projects">
               <img
-                className="w-32 h-auto object-contain"
+                className="w-32 h-auto object-contain hidden sm:block"
                 src={Logo}
                 alt="Logo"
+              />
+              <img
+                className="w-8 h-auto mr-2 object-contain sm:hidden"
+                src={sLogo}
+                alt="C"
               />
             </Link>
 
@@ -176,10 +190,7 @@ const NewProject = () => {
                     </>
                   ) : (
                     <>
-                      {author === user?.displayName ||
-                      author === user?.email ? (
-                        user.email.split("@")[0]
-                      ) : null ? (
+            
                         <motion.div
                           key={"MdEdit"}
                           whileTap={{ scale: 0.9 }}
@@ -190,9 +201,6 @@ const NewProject = () => {
                         >
                           <MdEdit className=" text-2xl text-primaryText" />
                         </motion.div>
-                      ) : (
-                        <></>
-                      )}
                     </>
                   )}
                 </AnimatePresence>
@@ -200,11 +208,7 @@ const NewProject = () => {
               {/* follow */}
               <div className="flex items-center justify-center px-2  -mt-2 gap-2">
                 <p className=" text-primaryText text-sm">
-                  {id
-                    ? author
-                    : user?.displayName
-                    ? user?.displayName
-                    : `${user?.email.split("@")[0]}`}
+                  {id ? author : loggedUser}
                 </p>
               </div>
             </div>
@@ -215,7 +219,7 @@ const NewProject = () => {
               onClick={() => setMode("light")}
               src={Light}
               alt="Light"
-              className="w-10 absolute top-5 right-72 cursor-pointer"
+              className={`w-10 absolute top-3 sm:top-5 right-32 sm:right-72 cursor-pointer`}
             />
           ) : (
             <motion.img
@@ -223,21 +227,26 @@ const NewProject = () => {
               onClick={() => setMode("dark")}
               src={Dark}
               alt="Light"
-              className="w-8 mt-1 ml-1 absolute top-5 right-72  cursor-pointer"
+              className={`w-8 mt-1 ml-1 absolute top-3 sm:top-5 right-32  sm:right-72  cursor-pointer`}
             />
           )}
 
           {/* user section */}
           {user && (
-            <div className="flex items-center justify-center gap-4">
-              <motion.button
-                onClick={saveProgram}
-                whileTap={{ scale: 0.9 }}
-                className="px-6 py-2.5 bg-emerald-500
+            <div className="flex items-center justify-center gap-2 sm:gap-4">
+                <motion.button
+                  onClick={saveProgram}
+                  whileTap={{ scale: 0.9 }}
+                  className="px-3 sm:px-6 py-1.5 sm:py-2.5 bg-emerald-500
                  cursor-pointer text-lg text-primary font-semibold rounded-md"
-              >
-                Save
-              </motion.button>
+                >
+                  <p className=" hidden sm:block">Save</p>
+                  <img
+                    src={savesm}
+                    alt=""
+                    className="w-7 h-auto object-contain sm:hidden"
+                  />
+                </motion.button>
               <UserProfileDetails />
             </div>
           )}
@@ -254,22 +263,23 @@ const NewProject = () => {
             defaultSize={"43%"}
           >
             {/* top coding section */}
-            <SplitPane split="vertical" minSize={110} defaultSize={"33%"}>
+            <SplitPane split="vertical" minSize={40} defaultSize={"33%"}>
               {/* html code */}
-              <div className="w-full h-full flex flex-col items-start justify-start">
+              <div className=" w-screen sm:w-full h-full flex flex-col items-start justify-start">
                 <div className="w-full flex items-center justify-between">
                   <div
-                    className="bg-secondary px-4 py-2 border-t-4 flex items-center
+                    className="bg-secondary px-2 sm:px-4 sm:ml-0 ml-2 py-2 border-t-4 flex items-center
                      justify-center gap-3 border-t-gray-500 "
                   >
                     <FaHtml5 className="text-xl text-red-500" />
-                    <p className=" text-primaryText font-semibold">HTML</p>
+                    <p className=" text-primaryText font-semibold hidden sm:block">
+                      HTML
+                    </p>
                   </div>
-
                   {/* icons section */}
-                  <div className="cursor-pointer flex items-center justify-center gap-4 px-4">
-                    <FcSettings className="text-xl" />
-                    <FaChevronDown className="text-xl text-primaryText" />
+                  <div className="cursor-pointer flex items-center justify-center gap-4 px-2 sm:px-4">
+                    <FcSettings className="text-xl" onClick={getUsers} />
+                    <FaChevronDown className="text-xl text-primaryText hidden sm:block" />
                   </div>
                 </div>
                 <div className="w-full px-2 overflow-y-scroll">
@@ -285,21 +295,23 @@ const NewProject = () => {
                 </div>
               </div>
 
-              <SplitPane split="vertical" minSize={100} defaultSize={"50%"}>
+              <SplitPane split="vertical" minSize={40} defaultSize={"50%"}>
                 {/* css code */}
-                <div className="w-full h-full flex flex-col items-start justify-start">
+                <div className="w-full h-full flex flex-col items-start justify-start ">
                   <div className="w-full flex items-center justify-between">
                     <div
-                      className="bg-secondary px-4 py-2 border-t-4 flex items-center
+                      className="bg-secondary  px-2 sm:px-4 sm:ml-0 ml-2 py-2 border-t-4 flex items-center
                      justify-center gap-3 border-t-gray-500"
                     >
                       <FaCss3 className="text-xl text-sky-500" />
-                      <p className=" text-primaryText font-semibold">CSS</p>
+                      <p className=" text-primaryText font-semibold hidden sm:block">
+                        CSS
+                      </p>
                     </div>
                     {/* icons section */}
-                    <div className="cursor-pointer flex items-center justify-center gap-4 px-4">
+                    <div className="cursor-pointer flex items-center justify-center gap-4 px-2 sm:px-4">
                       <FcSettings className="text-xl" />
-                      <FaChevronDown className="text-xl text-primaryText" />
+                      <FaChevronDown className="text-xl text-primaryText hidden sm:block" />
                     </div>
                   </div>
                   <div className="w-full px-2 overflow-y-scroll">
@@ -319,16 +331,18 @@ const NewProject = () => {
                 <div className="w-full h-full flex flex-col items-start justify-start">
                   <div className="w-full flex items-center justify-between">
                     <div
-                      className="bg-secondary px-4 py-2 border-t-4 flex items-center
+                      className="bg-secondary  px-2 sm:px-4 sm:ml-0 ml-2 py-2 border-t-4 flex items-center
                      justify-center gap-3 border-t-gray-500"
                     >
                       <FaJs className="text-xl text-yellow-500" />
-                      <p className=" text-primaryText font-semibold">JS</p>
+                      <p className=" text-primaryText font-semibold hidden sm:block">
+                        JS
+                      </p>
                     </div>
                     {/* icons section */}
-                    <div className="cursor-pointer flex items-center justify-center gap-4 px-4">
+                    <div className="cursor-pointer flex items-center justify-center gap-4 px-2 sm:px-4">
                       <FcSettings className="text-xl" />
-                      <FaChevronDown className="text-xl text-primaryText" />
+                      <FaChevronDown className="text-xl text-primaryText hidden sm:block" />
                     </div>
                   </div>
                   <div className="w-full px-2 overflow-y-scroll">
