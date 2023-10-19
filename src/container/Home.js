@@ -88,7 +88,6 @@ const Home = () => {
         className="flex-1 min-h-screen max-h-screen overflow-y-scroll h-full flex
       flex-col items-start justify-start px-4 md:px-12 py-4 md:py-12"
       >
-        
         {/* Top section  */}
         <div className="w-full flex items-center justify-between gap-3">
           {/* Search */}
